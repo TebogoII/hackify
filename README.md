@@ -40,14 +40,14 @@ To get started with Hackify, follow these steps:
    cd hackify
    ```
 
-3. Install the dependencies:
+3. Open the hackify file:
    ```bash
-   npm install
+   hackify.html
    ```
 
-4. Start the application:
+4. Start the application with web browser:
    ```bash
-   npm start
+   /location/hackify.html
    ```
 
 ## Usage
