@@ -32,7 +32,7 @@ To get started with Hackify, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/hackify.git
+   git clone https://github.com/tebogoii/hackify.git
    ```
 
 2. Navigate to the project directory:
@@ -106,6 +106,4 @@ Hackify is licensed under the MIT License. See the [LICENSE](LICENSE) file for m
 
 ---
 
-For any questions or support, please contact us at support@hackify.io.
-
-Happy hacking with Hackify!
+For any questions or support, please contact us at tebogothagejr@gmail.com
