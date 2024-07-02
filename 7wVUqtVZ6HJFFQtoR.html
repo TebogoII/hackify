@@ -1,0 +1,354 @@
+<html><head><base href="https://hackify.io/%20%20keep%20the%20same%20style%20page%20makeup,%20and%20icon%20usage,%20ensure%20its%20still%20react%20native,%20add%20moving%20elements%20like%20a%20network%20bars%20system%20and%20wifi%20signal%20as%20well%20as%20ram%20and%20cpu%20usage%20which%20are%20dynamic,%20center%20the%20elements,%20just%20like%20the%20given%20context,%20add%20two%20more%20tools">
+<title>Hackify - Advanced Hacker's Toolkit</title>
+<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 1200px;
+    text-align: center;
+  }
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: center;
+  }
+  .app-card {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 255, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 8px rgba(0, 255, 0, 0.2);
+  }
+  .app-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #1db954;
+  }
+  h1, h2 {
+    color: #1db954;
+  }
+  a {
+    color: #1db954;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover {
+    color: #1ed760;
+    text-decoration: underline;
+  }
+  .button {
+    background-color: #1db954;
+    color: #121212;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  .button:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 10px;
+  }
+  .system-status {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .status-item {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .status-item:hover {
+    transform: scale(1.05);
+  }
+  .network-bars {
+    display: flex;
+    align-items: flex-end;
+    height: 20px;
+  }
+  .bar {
+    width: 5px;
+    background-color: #1db954;
+    margin-right: 2px;
+    transition: height 0.5s ease;
+  }
+  .wifi-signal {
+    position: relative;
+    width: 20px;
+    height: 20px;
+  }
+  .wifi-signal .bar {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    background-color: #1db954;
+    border-radius: 3px 3px 0 0;
+  }
+  .usage-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .usage-fill {
+    height: 100%;
+    background-color: #1db954;
+    transition: width 0.5s ease;
+  }
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .popup-content {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+  }
+  .popup-content button {
+    background-color: #1db954;
+    color: #121212;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  .popup-content button:hover {
+    background-color: #1ed760;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const App = () => {
+  const [active, setActive] = React.useState(null);
+  const [networkStrength, setNetworkStrength] = React.useState(3);
+  const [wifiStrength, setWifiStrength] = React.useState(2);
+  const [ramUsage, setRamUsage] = React.useState(50);
+  const [cpuUsage, setCpuUsage] = React.useState(30);
+  const [popupInfo, setPopupInfo] = React.useState(null);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setNetworkStrength(Math.floor(Math.random() * 5) + 1);
+      setWifiStrength(Math.floor(Math.random() * 4) + 1);
+      setRamUsage(Math.floor(Math.random() * 100));
+      setCpuUsage(Math.floor(Math.random() * 100));
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleActive = (appName) => {
+    setActive(active === appName ? null : appName);
+  };
+
+  const openPopup = (type) => {
+    let info = '';
+    switch(type) {
+      case 'network':
+        info = `Network strength: ${networkStrength}/5. This represents the cellular network signal strength. A higher number indicates better connection quality for mobile data.`;
+        break;
+      case 'wifi':
+        info = `WiFi strength: ${wifiStrength}/4. This shows the strength of your WiFi connection. A stronger signal ensures faster and more stable internet access.`;
+        break;
+      case 'ram':
+        info = `RAM Usage: ${ramUsage}%. This indicates the percentage of your device's Random Access Memory currently in use. High usage may slow down your device.`;
+        break;
+      case 'cpu':
+        info = `CPU Usage: ${cpuUsage}%. This shows how much of your processor's capacity is being utilized. High CPU usage can impact overall system performance.`;
+        break;
+    }
+    setPopupInfo(info);
+  };
+
+  const closePopup = () => {
+    setPopupInfo(null);
+  };
+
+  const HackApp = ({ name, description, icon }) => (
+    <div className="app-card">
+      <i className={`app-icon ${icon}`}></i>
+      <h3>{name}</h3>
+      <p>{description}</p>
+      <button className="button" onClick={() => toggleActive(name)}>
+        {active === name ? 'Deactivate' : 'Activate'}
+      </button>
+    </div>
+  );
+
+  const NetworkBars = ({ strength }) => (
+    <div className="network-bars">
+      {[1, 2, 3, 4, 5].map(i => (
+        <div key={i} className="bar" style={{height: i <= strength ? i * 4 : 2}}></div>
+      ))}
+    </div>
+  );
+
+  const WifiSignal = ({ strength }) => (
+    <div className="wifi-signal">
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} className="bar" style={{
+          height: i * 5,
+          width: i * 5,
+          opacity: i <= strength ? 1 : 0.3
+        }}></div>
+      ))}
+    </div>
+  );
+
+  const UsageBar = ({ usage }) => (
+    <div className="usage-bar">
+      <div className="usage-fill" style={{width: `${usage}%`}}></div>
+    </div>
+  );
+
+  const Popup = ({ info, onClose }) => (
+    <div className="popup">
+      <div className="popup-content">
+        <p>{info}</p>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="container">
+      <h1><i className="fas fa-laptop-code"></i> Hackify</h1>
+      
+      <div className="system-status">
+        <div className="status-item" onClick={() => openPopup('network')}>
+          <p>Network</p>
+          <NetworkBars strength={networkStrength} />
+        </div>
+        <div className="status-item" onClick={() => openPopup('wifi')}>
+          <p>WiFi</p>
+          <WifiSignal strength={wifiStrength} />
+        </div>
+        <div className="status-item" onClick={() => openPopup('ram')}>
+          <p>RAM: {ramUsage}%</p>
+          <UsageBar usage={ramUsage} />
+        </div>
+        <div className="status-item" onClick={() => openPopup('cpu')}>
+          <p>CPU: {cpuUsage}%</p>
+          <UsageBar usage={cpuUsage} />
+        </div>
+      </div>
+
+      {popupInfo && <Popup info={popupInfo} onClose={closePopup} />}
+
+      <p>Welcome to Hackify, your cutting-edge toolkit for modern hackers. Elevate your digital craft with our suite of innovative tools.</p>
+      
+      <h2>Top Hacking Apps</h2>
+      <div className="app-grid">
+        <HackApp 
+          name="Packet Sniffer Pro" 
+          description="Analyze network traffic with AI-enhanced visualization." 
+          icon="fas fa-network-wired"
+        />
+        <HackApp 
+          name="Firewall Fortress" 
+          description="Configure your defenses with blockchain-secured protocols." 
+          icon="fas fa-shield-alt"
+        />
+        <HackApp 
+          name="Encryption Suite" 
+          description="Generate unbreakable keys with advanced cryptographic algorithms." 
+          icon="fas fa-lock"
+        />
+        <HackApp 
+          name="Neural SQL Optimizer" 
+          description="Craft AI-optimized queries with neuro-symbolic processing." 
+          icon="fas fa-brain"
+        />
+        <HackApp 
+          name="Zero-Day Hunter" 
+          description="Automate discovery of unknown vulnerabilities in systems." 
+          icon="fas fa-binoculars"
+        />
+        <HackApp 
+          name="Stealth VPN" 
+          description="Cloak your online presence with quantum-resistant tunneling." 
+          icon="fas fa-user-ninja"
+        />
+        <HackApp 
+          name="Quantum Decryptor" 
+          description="Leverage quantum computing to break complex encryption schemes." 
+          icon="fas fa-atom"
+        />
+        <HackApp 
+          name="AI Malware Forge" 
+          description="Create adaptive malware using advanced machine learning algorithms." 
+          icon="fas fa-virus"
+        />
+      </div>
+
+      <h2>Curated Toolkits</h2>
+      <ul>
+        <li><a href="toolkits/ghost_protocol"><i className="fas fa-user-secret"></i> Ghost Protocol: Stealth Hacking Tools</a></li>
+        <li><a href="toolkits/cyber_arsenal"><i className="fas fa-server"></i> Cyber Arsenal: Advanced Exploit Techniques</a></li>
+        <li><a href="toolkits/quantum_enigma"><i className="fas fa-qrcode"></i> Quantum Enigma: Post-Quantum Cryptography Set</a></li>
+      </ul>
+
+      <h2>Latest Releases</h2>
+      <ul>
+        <li><a href="apps/neural_fuzzer"><i className="fas fa-microchip"></i> Neural Fuzzer: AI-Powered Vulnerability Scanner</a></li>
+        <li><a href="apps/defi_hacker"><i className="fab fa-ethereum"></i> DeFi Hacker: Smart Contract Auditor</a></li>
+        <li><a href="apps/quantum_entangler"><i className="fas fa-project-diagram"></i> Quantum Entangler: Secure Communication Protocol</a></li>
+      </ul>
+
+      <footer>
+        <p>Hackify: Where cutting-edge code meets futuristic tech. <a href="about">About</a> | <a href="terms">Terms</a> | <a href="privacy">Privacy</a></p>
+      </footer>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body></html>
